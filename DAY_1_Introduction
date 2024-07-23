@@ -1,0 +1,43 @@
+CREATE TABLE EMP(
+	eid INT AUTO_INCREMENT,
+    firstName VARCHAR(50)  NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    salary INT NOT NULL,
+    location VARCHAR(50) NOT NULL,
+    PRIMARY KEY(eid)
+);
+
+show databases;
+use sweabhishek;
+DESC EMP;
+SHOW tables;
+
+INSERT INTO EMP( firstName , lastName , salary , location) VALUES("nikhil","singh", 90000 , "india");
+INSERT INTO EMP( firstName , lastName , salary , location) VALUES("Abhi","raut", 140000 , "india");
+INSERT INTO EMP( firstName , lastName , salary , location) VALUES("chinu","raut", 50000 , "india");
+INSERT INTO EMP( firstName , lastName , salary , location) VALUES("saurabh","lanjewar", 150000 , "india");
+INSERT INTO EMP( firstName , lastName , salary , location) VALUES("sahil","singh", 20000 , "india");
+INSERT INTO EMP( firstName , lastName , salary , location) VALUES("tanish","singh", 10000 , "india");
+
+select * from EMP;
+
+-- give me the details of the emp whos salary is more than 1 lakh
+select * from emp where salary > 100000;
+
+-- give me the fName and lName of the emp whos salary is more than 1 lakh
+select firstName , lastName  from emp where salary > 100000;
+
+
+-- update sahil lastname to kadu form emp table
+UPDATE EMP SET lastName = 'kadu'
+WHERE eid = '5';
+-- this will work fine because we are using the primary key for selecting and changinh the value but if we want that we 
+-- should change the lastname using non primary key attributes then we will get error 
+
+-- to use update without primary key attribute we need to disable the safe update
+SELECT @@sql_safe_updates;
+SET SQL_SAFE_UPDATES = 0;
+
+-- update sahil lastname to kadu form emp table
+UPDATE EMP SET lastName = 'kadu'
+WHERE firstName = 'sahil';

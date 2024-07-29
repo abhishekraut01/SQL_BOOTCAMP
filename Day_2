@@ -1,0 +1,128 @@
+create database coursera;
+show databases;
+use coursera;
+show tables;
+
+CREATE TABLE courses(
+    courseId INT AUTO_INCREMENT,
+    courseDuration VARCHAR(50) NOT NULL,
+    courseName VARCHAR(100) NOT NULL,
+    courseFees INT NOT NULL,
+    PRIMARY KEY(courseId)
+);
+
+CREATE TABLE Learner(
+    learnerId INT AUTO_INCREMENT,
+    learner_firstName VARCHAR(50) NOT NULL,
+    learner_lastName VARCHAR(100) NOT NULL,
+    learner_PhoneNo VARCHAR(15) NOT NULL,
+    learner_email VARCHAR(100) NOT NULL,
+    learner_enrollmentDate TIMESTAMP NOT NULL,
+    years_of_exp INT NOT NULL,
+    learner_company VARCHAR(100),
+    Selected_course INT NOT NULL,
+    source_of_join VARCHAR(100) NOT NULL,
+    location VARCHAR(100) NOT NULL,
+    batch_start_date DATE NOT NULL,
+    PRIMARY KEY(learnerId),
+    UNIQUE KEY(learner_email),
+    FOREIGN KEY(Selected_course) REFERENCES courses(courseId)
+);
+
+-- Describe the courses table
+DESC courses;
+
+-- Show tables
+SHOW TABLES;
+
+-- Insert data into courses table
+INSERT INTO courses(courseName, courseDuration, courseFees) 
+VALUES 
+("The Complete EXCEL Mastery Course", "1 Month", 9999),
+("The Complete DSA BOOTCAMP", "3 Months", 19999),
+("The Complete SQL Mastery Course", "1 Month", 999),
+("Chai Aur JS", "9 Month", 15499);
+
+-- Select data from courses table
+SELECT * FROM courses;
+
+-- Select data from Learner table
+SELECT * FROM Learner;
+
+-- Describe the Learner table
+DESC Learner;
+
+-- Insert data into Learner table
+INSERT INTO Learner (learner_firstName, learner_lastName, learner_PhoneNo, learner_email, years_of_exp, learner_company, Selected_course, source_of_join, location, batch_start_date, learner_enrollmentDate)
+VALUES
+('John', 'Doe', '1234567890', 'john.doe@example.com', 5, 'TechCorp', 1, 'Chai Aur JS', 'New York', '2024-08-01', '2024-07-01'),
+('Jane', 'Smith', '0987654321', 'jane.smith@example.com', 3, 'Innovate Ltd', 2, 'The Complete DSA BOOTCAMP', 'San Francisco', '2024-08-15', '2024-07-15'),
+('Alice', 'Johnson', '1122334455', 'alice.johnson@example.com', 2, 'DevWorks', 3, 'The Complete EXCEL Mastery Course', 'Chicago', '2024-10-01', '2024-08-15'),
+('Bob', 'Brown', '6677889900', 'bob.brown@example.com', 8, 'SoftSolutions', 1, 'The Complete SQL Mastery Course', 'Austin', '2024-08-15', '2024-07-15'),
+('Eve', 'Davis', '5566778899', 'eve.davis@example.com', 4, 'NetTech', 2, 'The Complete DSA BOOTCAMP', 'Seattle', '2024-08-15', '2024-08-14');
+
+-- Update the source_of_join for each learner
+UPDATE Learner SET source_of_join = 'YouTube' WHERE learner_email = 'john.doe@example.com';
+UPDATE Learner SET source_of_join = 'LinkedIn' WHERE learner_email = 'jane.smith@example.com';
+UPDATE Learner SET source_of_join = 'Facebook' WHERE learner_email = 'alice.johnson@example.com';
+UPDATE Learner SET source_of_join = 'Twitter' WHERE learner_email = 'bob.brown@example.com';
+UPDATE Learner SET source_of_join = 'Instagram' WHERE learner_email = 'eve.davis@example.com';
+
+-- Verify the updates
+SELECT * FROM Learner;
+CREATE TABLE Employee (
+    employeeId INT AUTO_INCREMENT,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    phoneNo VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    hireDate DATE NOT NULL,
+    department VARCHAR(100),
+    salary DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY(employeeId),
+    UNIQUE KEY(email)
+);
+
+-- Insert some entries into the Employee table
+INSERT INTO Employee (firstName, lastName, phoneNo, email, hireDate, department, salary)
+VALUES
+('Alice', 'Williams', '1234567890', 'alice.williams@example.com', '2022-01-15', 'Engineering', 85000.00),
+('Bob', 'Smith', '0987654321', 'bob.smith@example.com', '2021-05-22', 'Marketing', 65000.00),
+('Charlie', 'Brown', '1122334455', 'charlie.brown@example.com', '2020-03-17', 'Human Resources', 70000.00),
+('Daisy', 'Johnson', '2233445566', 'daisy.johnson@example.com', '2019-07-09', 'Finance', 90000.00),
+('Ethan', 'Harris', '3344556677', 'ethan.harris@example.com', '2023-02-10', 'Sales', 72000.00);
+
+-- Verify the entries
+SELECT * FROM Employee;
+
+-- give me the employee name whose salary is highest among all the employee
+select firstName , salary from Employee order by salary desc limit 3; 
+
+-- give me the employee name whose salary is highest among all the employee and empid > 2
+select * from Employee where employeeId > 2 order by salary desc; 
+
+-- give me the employee name whose salary is highest among all the employee and empid > 2
+select * from Employee where employeeId > 2 order by salary desc; 
+
+-- give me the employee name whose salary is highest among all the employee and empid > 2
+select * from Employee where salary = (
+	select max(salary) from Employee
+); 
+
+select max(salary) as max_salary from Employee;
+select min(salary) as min_salary from Employee;
+
+select * from Employee where salary = (
+	select max(salary) from Employee 
+); 
+
+-- display the number of enrollment in the courses
+select count(*) as no_of_enrollment from learner;
+
+-- display the number of enrollment in the courses where courseId = 3
+select count(*) as no_of_enrollment
+from learner where Selected_course =3;
+
+-- display the number of lerners form the month of july
+select count(*) as no_of_enrollment_in_july
+from learner where learner_enrollmentDate like '%-07-%'

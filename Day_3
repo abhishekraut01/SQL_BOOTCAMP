@@ -1,0 +1,59 @@
+show databases;
+use coursera;
+show tables;
+
+select * from learner;
+update Learner SET source_of_join = 'YouTube' WHERE learnerId = 5;
+update learner SET source_of_join = 'YouTube' WHERE learnerId = 3;
+
+-- count the no of student who joined through Youtube , linkedin , twitter
+select source_of_join , count(*) as no_of_students 
+from learner 
+group by source_of_join ;
+
+-- count the number of students via selected courses
+SELECT Selected_course, count(*) AS no_of_students 
+FROM learner 
+GROUP BY Selected_course;
+
+-- get the people who are having max experience from the source of joining
+SELECT source_of_join , MAX(years_of_exp) as Max_year_exp 
+from learner
+group by source_of_join;
+
+-- get those platfrom from which no of  enrollment happen less than 1
+select source_of_join , count(*) as source_of_join_for_student
+from learner
+group by source_of_join
+having source_of_join_for_student <2;
+
+select source_of_join , count(*) as No_of_students
+from learner
+group by source_of_join 
+having source_of_join = 'YouTube';
+
+
+-- give the amount of money our company is spending on the emp salary
+select SUM(salary) as Total_amount from Employee;
+
+
+-- -----------------------------------------------------------------------------------
+-- Logical operators in SQL
+
+-- display the course which does not include the exel
+SELECT * FROM courses WHERE courseName NOT LIKE '%EXCEL%';
+
+-- display the list of those students who has less than 4 yr of experence and source of joining as youtube
+-- whenever there are multiple constrain and every constrain should be satisfied then use AND operator
+SELECT * from learner where years_of_exp > 4 and source_of_join = 'YouTube';
+
+-- -------- Alter Command in SQL ----------------------
+
+DESC Employee;
+ALTER TABLE Employee ADD column jonPosition varchar(50);
+ALTER TABLE Employee MODIFY column firstName varchar(40);
+
+ALTER TABLE employee DROP PRIMARY KEY;
+
+update courses set courseFees = 3999 where courseId = 4;
+select * from courses;

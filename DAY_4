@@ -1,0 +1,128 @@
+show databases;
+use coursera;
+show tables;
+
+select * from employee;
+alter table employee add column location varchar(30) ;
+update employee set location = 'nagpur' where employeeId = 1;
+update employee set location = 'banglore' where employeeId = 2;
+update employee set location = 'nagpur' where employeeId = 3;
+update employee set location = 'pune' where employeeId = 4;
+update employee set location = 'nagpur' where employeeId = 5;
+update employee set salary = 90000 where employeeId = 7;
+update employee set location = 'pune' where employeeId = 9;
+update employee set location = 'banglore' where employeeId = 8;
+
+
+INSERT INTO employee (firstName, lastName, phoneno, email, hireDate, department, salary, jonPosition, location)
+VALUES 
+('chinu', 'raut', '3984399849', 'chinu@gmail.com', '2023-07-02', 'marketing', 64000, 'marketing head', 'Nagpur'),
+('abhi', 'raut', '3775979838', 'abhi@gmail.com', '2023-07-02', 'engineering', 64000, 'SDE', 'Nagpur');
+INSERT INTO employee (firstName, lastName, phoneno, email, hireDate, department, salary, jonPosition, location)
+VALUES 
+('sonu', 'yadav', '37555479838', 'sonu@gmail.com', '2023-07-02', 'engineering', 400000, 'SDE', 'Nagpur');
+
+INSERT INTO employee (firstName, lastName, phoneno, email, hireDate, department, salary, jonPosition, location)
+VALUES 
+('raj', 'sharma', '4775739938', 'raj@gmail.com', '2023-07-02', 'engineering', 40000, 'SDE', 'Nagpur');
+
+-- for every location what is the count of employee and avg salary  of emp in those location
+select location ,count(*) as total , avg(salary) as Avg_salary
+from employee
+group by location;
+
+-- for every location what is the count of employee and avg salary  of emp in those location
+-- give the firstName and lastName too 
+select location , firstName , lastName ,count(*) as total , avg(salary) as Avg_salary
+from employee
+group by location , firstName , lastName;
+
+-- this is the wrong solution because we are retriving the first name and last name as the unique entity 
+-- and with repect to that we are getting avarage salary suppose bom smith from banglore occures 2 time then we get our avg salary but that is also not our answer
+
+-- to resolve this we use join
+select firstName , lastName , employee.location , Total , AVG_Salary
+from employee
+join
+(select location , count(*) as Total , avg(salary) as AVG_Salary
+from employee
+group by location) as temp
+on 
+employee.location = temp.location;
+
+-- optimized the aboove query with window function
+select firstName , lastName , location ,
+count(location) OVER (partition by location ) as Total,
+avg(salary) OVER (partition by location ) as avg_salary
+from employee ;
+
+-- select the first name of emp whose salary is higher
+select firstName , lastName , salary  from employee order by salary desc;
+
+-- imp window funtions
+-- ROW_NUMBER() , RANK() , 
+
+select firstName , lastName , salary ,
+ROW_NUMBER() OVER (order by salary desc) as priority_emp
+from employee;
+-- when we use row_number we get the ranking but if the salary is duplicate then the for same salary value will be different this is the problem with row_number
+
+
+select firstName , lastName , salary ,
+RANK() OVER (order by salary desc) as priority_emp
+from employee;
+-- now for the same salary we get the same rank but the order is not preserved 
+
+select firstName , lastName , salary ,
+DENSE_RANK() OVER (order by salary desc) as priority_emp
+from employee;
+-- if there is no duplicate data then ROW_NUMBER() vs  rank() vs dense_rank() returns the same result
+
+-- give me the employee with the second highest salary in the company
+SELECT * from 
+(
+    SELECT firstName , lastName ,  salary, 
+           row_number() OVER (ORDER BY salary DESC) AS row_num
+    FROM employee
+) as temp 
+WHERE temp.row_num = 2;
+
+
+/* The query provided will return all employees who have the same salary as the second-highest salary. 
+However, it can be simplified to avoid confusion and ensure that all employee
+s with the second-highest salary are correctly retrieved. 
+Instead of using ROW_NUMBER(), you can use the DENSE_RANK() window function, 
+which assigns the same rank to equal values. */
+
+SELECT * from 
+(
+    SELECT firstName , lastName ,  salary, 
+           DENSE_RANK() OVER (ORDER BY salary DESC) AS row_num
+    FROM employee
+) as temp 
+WHERE temp.row_num = 2;
+
+
+-- with respect to location give the hishest salary 
+
+select firstName , lastName , employee.location , max_salary
+from employee 
+join
+(select location , 
+    max(salary) as max_salary from employee
+    group by location) as temp on employee.location = temp.location;
+
+
+-- another and correct solution is 
+SELECT * from 
+(
+    SELECT firstName , lastName ,  salary, location , 
+           row_number() OVER (partition by location ORDER BY salary DESC) AS row_num
+    FROM employee
+) as temp 
+WHERE temp.row_num = 1;
+    
+    
+SELECT firstName , lastName ,  salary, location , 
+           row_number() OVER (partition by location ORDER BY salary DESC) AS row_num
+    FROM employee
